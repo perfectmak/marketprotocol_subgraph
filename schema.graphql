@@ -51,3 +51,26 @@ type PositionTokenOwner @entity {
   token: PositionToken!
   balance: BigInt
 }
+
+# log records of minting actions
+type PositionTokenMintedEvent @entity {
+  id: ID!
+  qtyMinted: BigInt!
+  marketContract: MarketContract!
+  owner: Bytes!
+  collateralLocked: BigInt!
+  fee: BigInt!
+  feeTokenAddress: Bytes!
+  timestamp: BigInt!
+}
+
+# log records of redeeming actions
+type PositionTokenRedeemedEvent @entity {
+  id: ID!
+  qtyRedeemed: BigInt!
+  marketContract: MarketContract!
+  owner: Bytes!
+  collateralUnlocked: BigInt!
+  marketSide: MarketSide!
+  timestamp: BigInt!
+}

@@ -10,7 +10,9 @@ import { ContractSettled, UpdatedLastPrice } from './types/MarketContract/Market
 import {
   MarketContract,
   PositionToken,
-  PositionTokenOwner
+  PositionTokenOwner,
+  PositionTokenMintedEvent,
+  PositionTokenRedeemedEvent
 } from './types/schema'
 import {
   ContractFactoryCaller,
@@ -192,6 +194,17 @@ export function handleTokensMinted(event: TokensMinted): void {
     .plus(event.params.collateralLocked)
 
   marketContract.save()
+
+  let tokenMintEvent = new PositionTokenMintedEvent(event.transaction.hash.toHex())
+  tokenMintEvent.qtyMinted = event.params.qtyMinted
+  tokenMintEvent.marketContract = event.params.marketContract.toHex()
+  tokenMintEvent.owner = event.params.user
+  tokenMintEvent.collateralLocked = event.params.collateralLocked
+  tokenMintEvent.fee = event.params.feesPaid
+  tokenMintEvent.feeTokenAddress = event.params.feeToken
+  tokenMintEvent.timestamp = event.block.timestamp
+
+  tokenMintEvent.save()
 }
 
 /**
@@ -208,6 +221,26 @@ export function handleTokensRedeemed(event: TokensRedeemed): void {
     .minus(event.params.collateralUnlocked)
 
   marketContract.save()
+
+  let tokenRedeemed = new PositionTokenRedeemedEvent(event.transaction.hash.toHex())
+  tokenRedeemed.qtyRedeemed = event.params.qtyRedeemed
+  tokenRedeemed.marketContract = event.params.marketContract.toHex()
+  tokenRedeemed.owner = event.params.user
+  tokenRedeemed.collateralUnlocked = event.params.collateralUnlocked
+  tokenRedeemed.timestamp = event.block.timestamp
+
+  let marketSide = event.params.marketSide
+  if (marketSide == MarketSideLongInt) {
+    tokenRedeemed.marketSide = MarketSideLong
+  } else if (marketSide == MarketSideShortInt) {
+    tokenRedeemed.marketSide = MarketSideShort
+  } else if (marketSide == MarketSideBothInt) {
+    tokenRedeemed.marketSide = MarketSideBoth
+  } else {
+    tokenRedeemed.marketSide = MarketSideUnknown
+  }
+
+  tokenRedeemed.save()
 
 }
 

@@ -404,38 +404,22 @@ export class PositionTokenOwner extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get owner(): Bytes | null {
+  get owner(): Bytes {
     let value = this.get("owner");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+    return value.toBytes();
   }
 
-  set owner(value: Bytes | null) {
-    if (value === null) {
-      this.unset("owner");
-    } else {
-      this.set("owner", Value.fromBytes(value as Bytes));
-    }
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
   }
 
-  get token(): string | null {
+  get token(): string {
     let value = this.get("token");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value.toString();
   }
 
-  set token(value: string | null) {
-    if (value === null) {
-      this.unset("token");
-    } else {
-      this.set("token", Value.fromString(value as string));
-    }
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
   }
 
   get balance(): BigInt | null {
@@ -453,5 +437,196 @@ export class PositionTokenOwner extends Entity {
     } else {
       this.set("balance", Value.fromBigInt(value as BigInt));
     }
+  }
+}
+
+export class PositionTokenMintedEvent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save PositionTokenMintedEvent entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save PositionTokenMintedEvent entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("PositionTokenMintedEvent", id.toString(), this);
+  }
+
+  static load(id: string): PositionTokenMintedEvent | null {
+    return store.get(
+      "PositionTokenMintedEvent",
+      id
+    ) as PositionTokenMintedEvent | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get qtyMinted(): BigInt {
+    let value = this.get("qtyMinted");
+    return value.toBigInt();
+  }
+
+  set qtyMinted(value: BigInt) {
+    this.set("qtyMinted", Value.fromBigInt(value));
+  }
+
+  get marketContract(): string {
+    let value = this.get("marketContract");
+    return value.toString();
+  }
+
+  set marketContract(value: string) {
+    this.set("marketContract", Value.fromString(value));
+  }
+
+  get owner(): Bytes {
+    let value = this.get("owner");
+    return value.toBytes();
+  }
+
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
+  }
+
+  get collateralLocked(): BigInt {
+    let value = this.get("collateralLocked");
+    return value.toBigInt();
+  }
+
+  set collateralLocked(value: BigInt) {
+    this.set("collateralLocked", Value.fromBigInt(value));
+  }
+
+  get fee(): BigInt {
+    let value = this.get("fee");
+    return value.toBigInt();
+  }
+
+  set fee(value: BigInt) {
+    this.set("fee", Value.fromBigInt(value));
+  }
+
+  get feeTokenAddress(): Bytes {
+    let value = this.get("feeTokenAddress");
+    return value.toBytes();
+  }
+
+  set feeTokenAddress(value: Bytes) {
+    this.set("feeTokenAddress", Value.fromBytes(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+}
+
+export class PositionTokenRedeemedEvent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save PositionTokenRedeemedEvent entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save PositionTokenRedeemedEvent entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("PositionTokenRedeemedEvent", id.toString(), this);
+  }
+
+  static load(id: string): PositionTokenRedeemedEvent | null {
+    return store.get(
+      "PositionTokenRedeemedEvent",
+      id
+    ) as PositionTokenRedeemedEvent | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get qtyRedeemed(): BigInt {
+    let value = this.get("qtyRedeemed");
+    return value.toBigInt();
+  }
+
+  set qtyRedeemed(value: BigInt) {
+    this.set("qtyRedeemed", Value.fromBigInt(value));
+  }
+
+  get marketContract(): string {
+    let value = this.get("marketContract");
+    return value.toString();
+  }
+
+  set marketContract(value: string) {
+    this.set("marketContract", Value.fromString(value));
+  }
+
+  get owner(): Bytes {
+    let value = this.get("owner");
+    return value.toBytes();
+  }
+
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
+  }
+
+  get collateralUnlocked(): BigInt {
+    let value = this.get("collateralUnlocked");
+    return value.toBigInt();
+  }
+
+  set collateralUnlocked(value: BigInt) {
+    this.set("collateralUnlocked", Value.fromBigInt(value));
+  }
+
+  get marketSide(): string {
+    let value = this.get("marketSide");
+    return value.toString();
+  }
+
+  set marketSide(value: string) {
+    this.set("marketSide", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
   }
 }

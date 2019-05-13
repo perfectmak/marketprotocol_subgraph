@@ -1,27 +1,119 @@
 specVersion: 0.0.1
-description: Gravatar for Ethereum
-repository: https://github.com/graphprotocol/example-subgraph
+description: Market Protocol Subgraph
+repository: https://github.com/perfectmak/marketprotocol_subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Gravity
-    network: mainnet
+    name: ContractFactory
+    network: kovan
     source:
-      address: '0x2E645469f354BB4F5c8a05B3b30A929361cf77eC'
-      abi: Gravity
+      address: '0x7b9c829ba165401a0834a9616ab53c645ce12d63'
+      abi: ContractFactory
+    templates:
+      - name: MarketContract
+        kind: ethereum/contract
+        network: mainnet
+        source:
+          abi: MarketContract
+        mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.1
+          language: wasm/assemblyscript
+          file: ./src/simplemapping.ts
+          entities:
+            - MarketContract
+          abis:
+            - name: MarketContract
+              file: ./abis/MarketContractMPX.json
+          eventHandlers:
+            - event: ContractSettled(uint256)
+              handler: handleContractSettled
+            - event: UpdatedLastPrice(uint256)
+              handler: handleUpdatedLastPrice
+      - name: PositionToken
+        kind: ethereum/contract
+        network: kovan
+        source:
+          abi: PositionToken
+        mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.1
+          language: wasm/assemblyscript
+          file: ./src/simplemapping.ts
+          entities:
+            - PositionToken
+            - PositionTokenOwner
+            - PositionTokenOwnersBalance
+          abis:
+            - name: PositionToken
+              file: ./abis/PositionToken.json
+          eventHandlers:
+            - event: Transfer(address,address,uint256)
+              handler: handlePositionTokenTransfer
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.1
+      apiVersion: 0.0.2
       language: wasm/assemblyscript
       entities:
-        - Gravatar
+        - MarketContract
+        - PositionToken
       abis:
-        - name: Gravity
-          file: ./abis/Gravity.json
+        - name: ContractFactory
+          file: ./abis/MarketContractFactoryMPX.json
+        - name: MarketContract
+          file: ./abis/MarketContractMPX.json
+        - name: PositionToken
+          file: ./abis/PositionToken.json
       eventHandlers:
-        - event: NewGravatar(uint256,address,string,string)
-          handler: handleNewGravatar
-        - event: UpdatedGravatar(uint256,address,string,string)
-          handler: handleUpdatedGravatar
-      file: ./src/mapping.ts
+        - event: MarketContractCreated(address,address)
+          handler: handleMarketContractCreated
+      file: ./src/simplemapping.ts
+  - kind: ethereum/contract
+    name: ContractRegistry
+    network: kovan
+    source:
+      address: '0x22f0bbdd749f0deb141e41ca2b25db4a20969176'
+      abi: ContractRegistry
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - MarketContract
+      abis:
+        - name: ContractRegistry
+          file: ./abis/MarketContractRegistry.json
+        - name: ContractFactory
+          file: ./abis/MarketContractFactoryMPX.json
+        - name: MarketContract
+          file: ./abis/MarketContractMPX.json
+      eventHandlers:
+        - event: AddressAddedToWhitelist(address)
+          handler: handleMarketContractAddressWhitelisted
+        - event: AddressRemovedFromWhitelist(address)
+          handler: handleMarketContractAddressRemovedFromWhitelist
+      file: ./src/simplemapping.ts
+  - kind: ethereum/contract
+    name: CollateralPool
+    network: kovan
+    source:
+      address: '0x544dd1815f327860d068d6720b225ac38fa613b4'
+      abi: CollateralPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - MarketContract
+      abis:
+        - name: CollateralPool
+          file: ./abis/MarketCollateralPool.json
+        - name: MarketContract
+          file: ./abis/MarketContractMPX.json
+      eventHandlers:
+        - event: TokensMinted(address,address,address,uint256,uint256,uint256)
+          handler: handleTokensMinted
+        - event: TokensRedeemed(address,address,uint256,uint256,uint8)
+          handler: handleTokensRedeemed
+      file: ./src/simplemapping.ts

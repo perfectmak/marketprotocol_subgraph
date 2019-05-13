@@ -1,6 +1,53 @@
-type Gravatar @entity {
+# this implies MarketContractMPX
+type MarketContract @entity {
   id: ID!
+  creator: Bytes!
+  name: String!
+  collateralTokenAddress: Bytes!
+  collateralPoolAddress: Bytes!
+  collateralPoolBalance: BigInt!
+  priceFloor: BigInt!
+  priceCap: BigInt!
+  priceDecimalPlaces: BigInt!
+  qtyMultiplier: BigInt!
+  expirationTimestamp: BigInt!
+  collateralPerUnit: BigInt!
+  collateralTokenFeePerUnit: BigInt!
+  mktTokenFeePerUnit: BigInt!
+  settlementDelay: BigInt!
+  shortPositionToken: PositionToken!
+  longPositionToken: PositionToken!
+  lastPrice: BigInt
+  settlementPrice: BigInt
+  settlementTimeStamp: BigInt
+  isSettled: Boolean!
+  isWhitelisted: Boolean!
+  factoryAddress: Bytes!
+  oracleUrl: String!
+  oracleStatistic: String!
+  oracleHubAddress: Bytes!
+}
+
+enum MarketSide {
+  Long
+  Short
+  Both
+  Unknown
+}
+
+type PositionToken @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: BigInt!
+  marketSide: MarketSide!
+  marketContract: MarketContract
+}
+
+# I can get a list of all tokens this person owns
+type PositionTokenOwner @entity {
+  id: ID! # owner+token Address
   owner: Bytes!
-  displayName: String!
-  imageUrl: String!
+  token: PositionToken!
+  balance: BigInt
 }

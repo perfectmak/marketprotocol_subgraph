@@ -1,5 +1,9 @@
 import { Address, SmartContract } from '@graphprotocol/graph-ts';
 
+/**
+ * 
+ * @deprecated
+ */
 export class ContractFactoryCaller extends SmartContract {
   constructor(address: string) {
     super('ContractFactory', Address.fromString(address))

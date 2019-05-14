@@ -1,5 +1,9 @@
 import { Address, BigInt, EthereumValue, SmartContract } from '@graphprotocol/graph-ts';
 
+/**
+ * 
+ * @deprecated
+ */
 export class PositionTokenCaller extends SmartContract {
   constructor(address: string) {
     super('PositionToken', Address.fromString(address))

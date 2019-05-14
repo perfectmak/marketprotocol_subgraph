@@ -1,5 +1,9 @@
 import { Address, BigInt, SmartContract } from '@graphprotocol/graph-ts';
 
+/**
+ * 
+ * @deprecated
+ */
 export class MarketContractCaller extends SmartContract {
   constructor(address: string) {
     super('MarketContract', Address.fromString(address))

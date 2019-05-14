@@ -372,6 +372,15 @@ export class PositionToken extends Entity {
       this.set("marketContract", Value.fromString(value as string));
     }
   }
+
+  get isMintable(): boolean {
+    let value = this.get("isMintable");
+    return value.toBoolean();
+  }
+
+  set isMintable(value: boolean) {
+    this.set("isMintable", Value.fromBoolean(value));
+  }
 }
 
 export class PositionTokenOwner extends Entity {

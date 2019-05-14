@@ -41,6 +41,7 @@ function hydratePositionToken(positionToken: PositionToken): void {
   positionToken.name = positionTokenCaller.name
   positionToken.symbol = positionTokenCaller.symbol
   positionToken.decimals = positionTokenCaller.decimals
+  positionToken.isMintable = true
 
   let marketSide = positionTokenCaller.marketSide
   if (marketSide.equals(BigInt.fromI32(MarketSideLongInt))) {
@@ -136,6 +137,16 @@ export function handleContractSettled(event: ContractSettled): void {
   marketContract.isSettled = true
 
   marketContract.save()
+
+  // update long and short tokens to not being mintable
+  let shortToken = PositionToken.load(marketContract.shortPositionToken)
+  let longToken = PositionToken.load(marketContract.longPositionToken)
+
+  shortToken.isMintable = false;
+  longToken.isMintable = false;
+
+  shortToken.save()
+  longToken.save()
 }
 
 export function handleUpdatedLastPrice(event: UpdatedLastPrice): void {

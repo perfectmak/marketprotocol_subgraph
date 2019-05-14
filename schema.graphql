@@ -42,6 +42,7 @@ type PositionToken @entity {
   decimals: BigInt!
   marketSide: MarketSide!
   marketContract: MarketContract
+  isMintable: Boolean!
 }
 
 # I can get a list of all tokens this person owns

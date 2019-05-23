@@ -4,6 +4,8 @@ This is an implementation of the subgraph for [Market Protocol](https://marketpr
 
 You can explore it on The Graph here: https://thegraph.com/explorer/subgraph/perfectmak/marketprotocol-kovan.
 
+Also, I put together a demo website that uses the subgraph here: https://mkt-subgraph.perfects.engineering 
+
 ## Entities
 
 This subgraph exposes five entities:

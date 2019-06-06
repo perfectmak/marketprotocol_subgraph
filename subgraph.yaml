@@ -8,12 +8,12 @@ dataSources:
     name: ContractFactory
     network: kovan
     source:
-      address: '0x7b9c829ba165401a0834a9616ab53c645ce12d63'
+      address: '0x5a2AB38a3fBD4F5d55c01af00e8863EE6E1C3474'
       abi: ContractFactory
     templates:
       - name: MarketContract
         kind: ethereum/contract
-        network: mainnet
+        network: kovan
         source:
           abi: MarketContract
         mapping:
@@ -73,7 +73,7 @@ dataSources:
     name: ContractRegistry
     network: kovan
     source:
-      address: '0x22f0bbdd749f0deb141e41ca2b25db4a20969176'
+      address: '0x07e959Ca7BDa2E7F99EEc54d94a57F2D3EEEA264'
       abi: ContractRegistry
     mapping:
       kind: ethereum/events
@@ -98,7 +98,7 @@ dataSources:
     name: CollateralPool
     network: kovan
     source:
-      address: '0x544dd1815f327860d068d6720b225ac38fa613b4'
+      address: '0xad550cB125a8681dc4a0b7D3b2e7d688C8677Ff1'
       abi: CollateralPool
     mapping:
       kind: ethereum/events

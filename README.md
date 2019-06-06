@@ -2,7 +2,9 @@
 
 This is an implementation of the subgraph for [Market Protocol](https://marketprotocol.io).
 
-You can explore it on The Graph here: https://thegraph.com/explorer/subgraph/perfectmak/marketprotocol-kovan.
+You can explore it on The Graph here:
+  - Kovan: https://thegraph.com/explorer/subgraph/perfectmak/marketprotocol-kovan
+  - Mainnet: https://thegraph.com/explorer/subgraph/perfectmak/marketprotocol
 
 Also, I put together a demo website that uses the subgraph here: https://mkt-subgraph.perfects.engineering 
 

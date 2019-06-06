@@ -6,9 +6,9 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: ContractFactory
-    network: kovan
+    network: mainnet
     source:
-      address: '0x7b9c829ba165401a0834a9616ab53c645ce12d63'
+      address: '0x3457905DeEa11DDc085Bc7bfaa8813AAB26b2dED'
       abi: ContractFactory
     templates:
       - name: MarketContract
@@ -33,7 +33,7 @@ dataSources:
               handler: handleUpdatedLastPrice
       - name: PositionToken
         kind: ethereum/contract
-        network: kovan
+        network: mainnet
         source:
           abi: PositionToken
         mapping:
@@ -71,9 +71,9 @@ dataSources:
       file: ./src/simplemapping.ts
   - kind: ethereum/contract
     name: ContractRegistry
-    network: kovan
+    network: mainnet
     source:
-      address: '0x22f0bbdd749f0deb141e41ca2b25db4a20969176'
+      address: '0x94772CC6E33b186bfdd0719A287f12d3ca816657'
       abi: ContractRegistry
     mapping:
       kind: ethereum/events
@@ -96,9 +96,9 @@ dataSources:
       file: ./src/simplemapping.ts
   - kind: ethereum/contract
     name: CollateralPool
-    network: kovan
+    network: mainnet
     source:
-      address: '0x544dd1815f327860d068d6720b225ac38fa613b4'
+      address: '0x6217D5392f6B7b6B3a9b2512A2b0Ec4CBB14c448'
       abi: CollateralPool
     mapping:
       kind: ethereum/events

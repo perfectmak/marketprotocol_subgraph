@@ -31,7 +31,6 @@ type MarketContract @entity {
 enum MarketSide {
   Long
   Short
-  Both
   Unknown
 }
 
@@ -39,7 +38,7 @@ type PositionToken @entity {
   id: ID!
   name: String!
   symbol: String!
-  decimals: BigInt!
+  decimals: Int!
   marketSide: MarketSide!
   marketContract: MarketContract
   isMintable: Boolean!
@@ -68,10 +67,10 @@ type PositionTokenMintedEvent @entity {
 # log records of redeeming actions
 type PositionTokenRedeemedEvent @entity {
   id: ID!
-  qtyRedeemed: BigInt!
+  longQtyRedeemed: BigInt!
+  shortQtyRedeemed: BigInt!
   marketContract: MarketContract!
   owner: Bytes!
   collateralUnlocked: BigInt!
-  marketSide: MarketSide!
   timestamp: BigInt!
 }

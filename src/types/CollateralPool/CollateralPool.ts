@@ -71,16 +71,16 @@ export class TokensRedeemed__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get qtyRedeemed(): BigInt {
+  get longQtyRedeemed(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
-  get collateralUnlocked(): BigInt {
+  get shortQtyRedeemed(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
 
-  get marketSide(): i32 {
-    return this._event.parameters[4].value.toI32();
+  get collateralUnlocked(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
   }
 }
 
@@ -329,8 +329,12 @@ export class SettleAndCloseCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get qtyToRedeem(): BigInt {
+  get longQtyToRedeem(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get shortQtyToRedeem(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
   }
 }
 

@@ -114,6 +114,6 @@ dataSources:
       eventHandlers:
         - event: TokensMinted(address,address,address,uint256,uint256,uint256)
           handler: handleTokensMinted
-        - event: TokensRedeemed(address,address,uint256,uint256,uint8)
+        - event: TokensRedeemed(address,address,uint256,uint256,uint256)
           handler: handleTokensRedeemed
       file: ./src/simplemapping.ts

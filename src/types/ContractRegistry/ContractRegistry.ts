@@ -243,10 +243,6 @@ export class RemoveContractFromWhiteListCall__Outputs {
   constructor(call: RemoveContractFromWhiteListCall) {
     this._call = call;
   }
-
-  get value0(): boolean {
-    return this._call.outputValues[0].value.toBoolean();
-  }
 }
 
 export class AddAddressToWhiteListCall extends EthereumCall {

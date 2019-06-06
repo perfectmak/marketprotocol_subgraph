@@ -1,12 +1,12 @@
-import { MarketContractCreated } from "./types/ContractFactory/ContractFactory";
+import { ContractFactory as ContractFactoryCaller, MarketContractCreated } from "./types/ContractFactory/ContractFactory";
 import { AddressAddedToWhitelist, AddressRemovedFromWhitelist } from "./types/ContractRegistry/ContractRegistry"
 import { TokensMinted, TokensRedeemed } from './types/CollateralPool/CollateralPool'
-import { Transfer } from './types/ContractFactory/PositionToken'
+import { PositionToken as PositionTokenCaller, Transfer } from './types/ContractFactory/PositionToken'
 import {
   MarketContract as MarketContractTemplate,
   PositionToken as PositionTokenTemplate
 } from "./types/ContractFactory/templates";
-import { ContractSettled, UpdatedLastPrice } from './types/MarketContract/MarketContract'
+import { MarketContract as MarketContractCaller, ContractSettled, UpdatedLastPrice } from './types/MarketContract/MarketContract'
 import {
   MarketContract,
   PositionToken,
@@ -14,20 +14,14 @@ import {
   PositionTokenMintedEvent,
   PositionTokenRedeemedEvent
 } from './types/schema'
-import {
-  ContractFactoryCaller,
-  MarketContractCaller,
-  PositionTokenCaller
-} from './chain_callers';
+
 import { BigInt, Address } from '@graphprotocol/graph-ts';
 
 let MarketSideLongInt = 0
 let MarketSideShortInt = 1
-let MarketSideBothInt = 2
 
 let MarketSideLong = 'Long'
 let MarketSideShort = 'Short'
-let MarketSideBoth = 'Both'
 let MarketSideUnknown = 'Unknown'
 
 
@@ -37,16 +31,16 @@ let MarketSideUnknown = 'Unknown'
  * @param positionToken 
  */
 function hydratePositionToken(positionToken: PositionToken): void {
-  let positionTokenCaller = new PositionTokenCaller(positionToken.id)
-  positionToken.name = positionTokenCaller.name
-  positionToken.symbol = positionTokenCaller.symbol
-  positionToken.decimals = positionTokenCaller.decimals
+  let positionTokenCaller = PositionTokenCaller.bind(Address.fromString(positionToken.id))
+  positionToken.name = positionTokenCaller.name()
+  positionToken.symbol = positionTokenCaller.symbol()
+  positionToken.decimals = positionTokenCaller.decimals()
   positionToken.isMintable = true
 
-  let marketSide = positionTokenCaller.marketSide
-  if (marketSide.equals(BigInt.fromI32(MarketSideLongInt))) {
+  let marketSide = positionTokenCaller.MARKET_SIDE()
+  if (marketSide === MarketSideLongInt) {
     positionToken.marketSide = MarketSideLong
-  } else if (marketSide.equals(BigInt.fromI32(MarketSideShortInt))) {
+  } else if (marketSide === MarketSideShortInt) {
     positionToken.marketSide = MarketSideShort
   } else {
     // should never happen, but good for debugging
@@ -66,8 +60,8 @@ export function handleMarketContractCreated(event: MarketContractCreated): void 
   // Track and Create new MarketContract
   MarketContractTemplate.create(marketContractAddress);
 
-  let contractFactoryCaller = new ContractFactoryCaller(event.address.toHex())
-  let marketContractCaller = new MarketContractCaller(marketContractAddress.toHex());
+  let contractFactoryCaller = ContractFactoryCaller.bind(event.address)
+  let marketContractCaller = MarketContractCaller.bind(marketContractAddress);
 
   let marketContract = MarketContract.load(marketContractAddress.toHex());
   if (marketContract == null) {
@@ -79,11 +73,11 @@ export function handleMarketContractCreated(event: MarketContractCreated): void 
   marketContract.id = event.params.contractAddress.toHex()
   marketContract.creator = event.params.creator
   marketContract.factoryAddress = event.address
-  marketContract.oracleHubAddress = contractFactoryCaller.oracleHubAddress
+  marketContract.oracleHubAddress = contractFactoryCaller.oracleHub()
 
   // create position tokens first
-  let shortPositionTokenAddress = marketContractCaller.shortPositionTokenAddress
-  let longPositionTokenAddress = marketContractCaller.longPositionTokenAddress
+  let shortPositionTokenAddress = marketContractCaller.SHORT_POSITION_TOKEN();
+  let longPositionTokenAddress = marketContractCaller.LONG_POSITION_TOKEN();
 
   // track the new tokens for events
   PositionTokenTemplate.create(shortPositionTokenAddress)
@@ -100,26 +94,26 @@ export function handleMarketContractCreated(event: MarketContractCreated): void 
   shortPositionToken.save()
   longPositionToken.save()
 
-  marketContract.name = marketContractCaller.name
+  marketContract.name = marketContractCaller.CONTRACT_NAME();
 
-  marketContract.collateralTokenAddress = marketContractCaller.collateralTokenAddress
-  marketContract.collateralPerUnit = marketContractCaller.collateralPerUnit
-  marketContract.collateralPoolAddress = marketContractCaller.collateralPoolAddress
+  marketContract.collateralTokenAddress = marketContractCaller.COLLATERAL_TOKEN_ADDRESS()
+  marketContract.collateralPerUnit = marketContractCaller.COLLATERAL_PER_UNIT();
+  marketContract.collateralPoolAddress = marketContractCaller.COLLATERAL_POOL_ADDRESS();
   marketContract.collateralPoolBalance = BigInt.fromI32(0)
 
-  marketContract.priceFloor = marketContractCaller.priceFloor
-  marketContract.priceCap = marketContractCaller.priceCap
-  marketContract.priceDecimalPlaces = marketContractCaller.priceDecimalPlaces
-  marketContract.qtyMultiplier = marketContractCaller.qtyMultiplier
-  marketContract.expirationTimestamp = marketContractCaller.expirationTimestamp
+  marketContract.priceFloor = marketContractCaller.PRICE_FLOOR()
+  marketContract.priceCap = marketContractCaller.PRICE_CAP();
+  marketContract.priceDecimalPlaces = marketContractCaller.PRICE_DECIMAL_PLACES()
+  marketContract.qtyMultiplier = marketContractCaller.QTY_MULTIPLIER()
+  marketContract.expirationTimestamp = marketContractCaller.EXPIRATION()
 
-  marketContract.collateralTokenFeePerUnit = marketContractCaller.collateralTokenFeePerUnit
-  marketContract.mktTokenFeePerUnit = marketContractCaller.mktTokenFeePerUnit
+  marketContract.collateralTokenFeePerUnit = marketContractCaller.COLLATERAL_TOKEN_FEE_PER_UNIT()
+  marketContract.mktTokenFeePerUnit = marketContractCaller.MKT_TOKEN_FEE_PER_UNIT()
 
-  marketContract.settlementDelay = marketContractCaller.settlementDelay
+  marketContract.settlementDelay = marketContractCaller.SETTLEMENT_DELAY()
 
-  marketContract.oracleUrl = marketContractCaller.oracleUrl
-  marketContract.oracleStatistic = marketContractCaller.oracleStatistic
+  marketContract.oracleUrl = marketContractCaller.ORACLE_URL()
+  marketContract.oracleStatistic = marketContractCaller.ORACLE_STATISTIC()
 
   marketContract.shortPositionToken = shortPositionToken.id
   marketContract.longPositionToken = longPositionToken.id
@@ -234,22 +228,12 @@ export function handleTokensRedeemed(event: TokensRedeemed): void {
   marketContract.save()
 
   let tokenRedeemed = new PositionTokenRedeemedEvent(event.transaction.hash.toHex())
-  tokenRedeemed.qtyRedeemed = event.params.qtyRedeemed
+  tokenRedeemed.longQtyRedeemed = event.params.longQtyRedeemed
+  tokenRedeemed.shortQtyRedeemed = event.params.shortQtyRedeemed
   tokenRedeemed.marketContract = event.params.marketContract.toHex()
   tokenRedeemed.owner = event.params.user
   tokenRedeemed.collateralUnlocked = event.params.collateralUnlocked
   tokenRedeemed.timestamp = event.block.timestamp
-
-  let marketSide = event.params.marketSide
-  if (marketSide == MarketSideLongInt) {
-    tokenRedeemed.marketSide = MarketSideLong
-  } else if (marketSide == MarketSideShortInt) {
-    tokenRedeemed.marketSide = MarketSideShort
-  } else if (marketSide == MarketSideBothInt) {
-    tokenRedeemed.marketSide = MarketSideBoth
-  } else {
-    tokenRedeemed.marketSide = MarketSideUnknown
-  }
 
   tokenRedeemed.save()
 
@@ -273,7 +257,7 @@ export function handlePositionTokenTransfer(event: Transfer): void {
   }
 
   let positionTokenAddress = event.address.toHex()
-  let positionTokenCaller = new PositionTokenCaller(positionTokenAddress)
+  let positionTokenCaller = PositionTokenCaller.bind(event.address)
 
   let positionToken = PositionToken.load(positionTokenAddress)
   if (positionToken == null) {
@@ -282,7 +266,7 @@ export function handlePositionTokenTransfer(event: Transfer): void {
   }
 
   if (spenderAddress.toHex() != '0x0000000000000000000000000000000000000000') {
-    let spendersBalance = positionTokenCaller.getBalanceOf(spenderAddress)
+    let spendersBalance = positionTokenCaller.balanceOf(spenderAddress)
     let tokenOwner = loadOrCreateTokenOwner(spenderAddress.toHex(), positionToken.id)
 
     tokenOwner.balance = spendersBalance
@@ -292,11 +276,11 @@ export function handlePositionTokenTransfer(event: Transfer): void {
 
 
   if (receipientAddress.toHex() != '0x0000000000000000000000000000000000000000') {
-    let receipientsBalance = positionTokenCaller.getBalanceOf(receipientAddress)
+    let receipientsBalance = positionTokenCaller.balanceOf(receipientAddress)
     let tokenOwner = loadOrCreateTokenOwner(receipientAddress.toHex(), positionToken.id)
-    
+
     tokenOwner.balance = receipientsBalance
-    
+
     tokenOwner.save()
   }
 

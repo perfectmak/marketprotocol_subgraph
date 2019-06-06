@@ -338,13 +338,13 @@ export class PositionToken extends Entity {
     this.set("symbol", Value.fromString(value));
   }
 
-  get decimals(): BigInt {
+  get decimals(): i32 {
     let value = this.get("decimals");
-    return value.toBigInt();
+    return value.toI32();
   }
 
-  set decimals(value: BigInt) {
-    this.set("decimals", Value.fromBigInt(value));
+  set decimals(value: i32) {
+    this.set("decimals", Value.fromI32(value));
   }
 
   get marketSide(): string {
@@ -585,13 +585,22 @@ export class PositionTokenRedeemedEvent extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get qtyRedeemed(): BigInt {
-    let value = this.get("qtyRedeemed");
+  get longQtyRedeemed(): BigInt {
+    let value = this.get("longQtyRedeemed");
     return value.toBigInt();
   }
 
-  set qtyRedeemed(value: BigInt) {
-    this.set("qtyRedeemed", Value.fromBigInt(value));
+  set longQtyRedeemed(value: BigInt) {
+    this.set("longQtyRedeemed", Value.fromBigInt(value));
+  }
+
+  get shortQtyRedeemed(): BigInt {
+    let value = this.get("shortQtyRedeemed");
+    return value.toBigInt();
+  }
+
+  set shortQtyRedeemed(value: BigInt) {
+    this.set("shortQtyRedeemed", Value.fromBigInt(value));
   }
 
   get marketContract(): string {
@@ -619,15 +628,6 @@ export class PositionTokenRedeemedEvent extends Entity {
 
   set collateralUnlocked(value: BigInt) {
     this.set("collateralUnlocked", Value.fromBigInt(value));
-  }
-
-  get marketSide(): string {
-    let value = this.get("marketSide");
-    return value.toString();
-  }
-
-  set marketSide(value: string) {
-    this.set("marketSide", Value.fromString(value));
   }
 
   get timestamp(): BigInt {

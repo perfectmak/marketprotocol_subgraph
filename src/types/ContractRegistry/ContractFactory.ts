@@ -198,8 +198,8 @@ export class DeployMarketContractMPXCall__Inputs {
     this._call = call;
   }
 
-  get contractNames(): string {
-    return this._call.inputValues[0].value.toString();
+  get contractNames(): Array<Bytes> {
+    return this._call.inputValues[0].value.toBytesArray();
   }
 
   get collateralTokenAddress(): Address {

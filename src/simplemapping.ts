@@ -15,7 +15,7 @@ import {
   PositionTokenRedeemedEvent
 } from './types/schema'
 
-import { BigInt, Address } from '@graphprotocol/graph-ts';
+import { BigInt, Address, log } from '@graphprotocol/graph-ts';
 
 let MarketSideLongInt = 0
 let MarketSideShortInt = 1
@@ -24,6 +24,18 @@ let MarketSideLong = 'Long'
 let MarketSideShort = 'Short'
 let MarketSideUnknown = 'Unknown'
 
+function sanitize(value: string): string {
+  let allowedCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_:/. ';
+  let sanitizedString = '';
+  for (let i = 0; i < value.length; i++) {
+    if (!allowedCharacters.includes(value[i])) {
+      continue;
+    }
+    sanitizedString += value[i];
+  }
+
+  return sanitizedString;
+}
 
 /**
  * Fetches the relevant fields for PositionToken
@@ -32,8 +44,9 @@ let MarketSideUnknown = 'Unknown'
  */
 function hydratePositionToken(positionToken: PositionToken): void {
   let positionTokenCaller = PositionTokenCaller.bind(Address.fromString(positionToken.id))
-  positionToken.name = positionTokenCaller.name()
-  positionToken.symbol = positionTokenCaller.symbol()
+  positionToken.name = sanitize(positionTokenCaller.name())
+  let symbol = sanitize(positionTokenCaller.symbol())
+  positionToken.symbol = symbol;
   positionToken.decimals = positionTokenCaller.decimals()
   positionToken.isMintable = true
 
@@ -94,7 +107,7 @@ export function handleMarketContractCreated(event: MarketContractCreated): void 
   shortPositionToken.save()
   longPositionToken.save()
 
-  marketContract.name = marketContractCaller.CONTRACT_NAME();
+  marketContract.name = sanitize(marketContractCaller.CONTRACT_NAME());
 
   marketContract.collateralTokenAddress = marketContractCaller.COLLATERAL_TOKEN_ADDRESS()
   marketContract.collateralPerUnit = marketContractCaller.COLLATERAL_PER_UNIT();
@@ -112,8 +125,8 @@ export function handleMarketContractCreated(event: MarketContractCreated): void 
 
   marketContract.settlementDelay = marketContractCaller.SETTLEMENT_DELAY()
 
-  marketContract.oracleUrl = marketContractCaller.ORACLE_URL()
-  marketContract.oracleStatistic = marketContractCaller.ORACLE_STATISTIC()
+  marketContract.oracleUrl = sanitize(marketContractCaller.ORACLE_URL())
+  marketContract.oracleStatistic = sanitize(marketContractCaller.ORACLE_STATISTIC())
 
   marketContract.shortPositionToken = shortPositionToken.id
   marketContract.longPositionToken = longPositionToken.id
@@ -202,7 +215,7 @@ export function handleTokensMinted(event: TokensMinted): void {
 
   let tokenMintEvent = new PositionTokenMintedEvent(event.transaction.hash.toHex())
   tokenMintEvent.qtyMinted = event.params.qtyMinted
-  tokenMintEvent.marketContract = event.params.marketContract.toHex()
+  tokenMintEvent.marketContract = marketContractAddress.toHex()
   tokenMintEvent.owner = event.params.user
   tokenMintEvent.collateralLocked = event.params.collateralLocked
   tokenMintEvent.fee = event.params.feesPaid

@@ -1,31 +1,31 @@
 # this implies MarketContractMPX
 type MarketContract @entity {
   id: ID!
-  creator: Bytes!
-  name: String!
-  collateralTokenAddress: Bytes!
-  collateralPoolAddress: Bytes!
-  collateralPoolBalance: BigInt!
-  priceFloor: BigInt!
-  priceCap: BigInt!
-  priceDecimalPlaces: BigInt!
-  qtyMultiplier: BigInt!
-  expirationTimestamp: BigInt!
-  collateralPerUnit: BigInt!
-  collateralTokenFeePerUnit: BigInt!
-  mktTokenFeePerUnit: BigInt!
-  settlementDelay: BigInt!
-  shortPositionToken: PositionToken!
-  longPositionToken: PositionToken!
+  creator: Bytes
+  name: String
+  collateralTokenAddress: Bytes
+  collateralPoolAddress: Bytes
+  collateralPoolBalance: BigInt
+  priceFloor: BigInt
+  priceCap: BigInt
+  priceDecimalPlaces: BigInt
+  qtyMultiplier: BigInt
+  expirationTimestamp: BigInt
+  collateralPerUnit: BigInt
+  collateralTokenFeePerUnit: BigInt
+  mktTokenFeePerUnit: BigInt
+  settlementDelay: BigInt
+  shortPositionToken: PositionToken
+  longPositionToken: PositionToken
   lastPrice: BigInt
   settlementPrice: BigInt
   settlementTimeStamp: BigInt
-  isSettled: Boolean!
-  isWhitelisted: Boolean!
-  factoryAddress: Bytes!
-  oracleUrl: String!
-  oracleStatistic: String!
-  oracleHubAddress: Bytes!
+  isSettled: Boolean
+  isWhitelisted: Boolean
+  factoryAddress: Bytes
+  oracleUrl: String
+  oracleStatistic: String
+  oracleHubAddress: Bytes
 }
 
 enum MarketSide {
@@ -36,12 +36,12 @@ enum MarketSide {
 
 type PositionToken @entity {
   id: ID!
-  name: String!
-  symbol: String!
-  decimals: Int!
-  marketSide: MarketSide!
+  name: String
+  symbol: String
+  decimals: Int
+  marketSide: MarketSide
   marketContract: MarketContract
-  isMintable: Boolean!
+  isMintable: Boolean
 }
 
 # I can get a list of all tokens this person owns

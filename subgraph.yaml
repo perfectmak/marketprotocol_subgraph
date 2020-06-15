@@ -1,6 +1,7 @@
-specVersion: 0.0.1
+specVersion: 0.0.2
 description: Market Protocol Subgraph
 repository: https://github.com/perfectmak/marketprotocol_subgraph
+# Defining schema here
 schema:
   file: ./schema.graphql
 dataSources:
